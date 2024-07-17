@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView
 
@@ -8,6 +9,24 @@ from website.models import Donation, Institution
 class RegisterView(View):
     def get(self, request):
         return render(request, 'register.html')
+
+    def post(self, request):
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        if not first_name or not last_name or not email or not password or not confirm_password:
+            return render(request, 'register.html', {'error': 'Wszystkie pola są wymagane'})
+        if password != confirm_password:
+            return render(request, 'register.html', {'error': 'Hasła nie są takie same'})
+        if User.objects.filter(email=email).exists():
+            return render(request, 'register.html', {'error': 'Użytkownik już istnieje'})
+        user = User.objects.create_user(username=email, email=email, password=password)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+        return redirect('login')
 
 
 class LoginView(View):

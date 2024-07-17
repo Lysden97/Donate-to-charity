@@ -13,21 +13,25 @@
   <body>
     <section class="login-page">
       <h2>Załóż konto</h2>
-      <form>
+        {% if error %}
+        <h3 style="color: red;">{{ error }}</h3>
+        {% endif %}
+      <form method="POST" action="">
+          {% csrf_token %}
         <div class="form-group">
-          <input type="text" name="name" placeholder="Imię" />
+          <input type="text" id="first_name" name="first_name" required placeholder="Imię" />
         </div>
          <div class="form-group">
-          <input type="text" name="surname" placeholder="Nazwisko" />
+          <input type="text" id="last_name"  name="last_name" required placeholder="Nazwisko" />
         </div>
         <div class="form-group">
-          <input type="email" name="email" placeholder="Email" />
+          <input type="email" id="email" name="email" required placeholder="Email" />
         </div>
         <div class="form-group">
-          <input type="password" name="password" placeholder="Hasło" />
+          <input type="password" id="password" name="password" required placeholder="Hasło" />
         </div>
         <div class="form-group">
-          <input type="password" name="password2" placeholder="Powtórz hasło" />
+          <input type="password" id="confirm_password" name="confirm_password" required placeholder="Powtórz hasło" />
         </div>
 
         <div class="form-group form-group--buttons">
