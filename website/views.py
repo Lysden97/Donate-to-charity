@@ -71,8 +71,10 @@ class IndexView(View):
 class AddDonationView(View):
     def get(self, request):
         categories = Category.objects.all()
+        institutions = Institution.objects.all()
         context = {
-            'categories': categories
+            'categories': categories,
+            'institutions': institutions,
         }
         if request.user.is_authenticated:
             return render(request, 'form.html', context)

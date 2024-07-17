@@ -7,7 +7,7 @@
     <link type='text/css' href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
 <body>
-<header>
+<header style="height: 30vh">
     <nav class="container container--70">
         <ul class="nav--actions">
             {% if not user.is_authenticated %}
@@ -22,6 +22,9 @@
                             <ul class="dropdown">
                                 <li><a href="#">Profil</a></li>
                                 <li><a href="#">Ustawienia</a></li>
+                                {% if user.is_superuser %}
+                                <li><a href="/admin">Panel administracyjny</a></li>
+                                {% endif %}
                                 <li><a href="{% url 'logout' %}">Wyloguj</a></li>
                             </ul>
                         </li>
