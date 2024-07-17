@@ -21,7 +21,11 @@ class Institution(models.Model):
     categories = models.ManyToManyField(Category)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} - {self.get_type_display()}'
+
+    class Meta:
+        verbose_name = 'Instytucja'
+        verbose_name_plural = 'Instytucje'
 
 
 class Donation(models.Model):
