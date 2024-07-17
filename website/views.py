@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import View
 
-from website.models import Donation, Institution
+from website.models import Donation, Institution, Category
 
 
 class RegisterView(View):
@@ -69,4 +70,11 @@ class IndexView(View):
 
 class AddDonationView(View):
     def get(self, request):
-        return render(request, 'form.html')
+        categories = Category.objects.all()
+        context = {
+            'categories': categories
+        }
+        if request.user.is_authenticated:
+            return render(request, 'form.html', context)
+        else:
+            return redirect('login')
