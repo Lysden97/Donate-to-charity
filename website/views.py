@@ -20,10 +20,12 @@ class IndexView(View):
         all_donations = Donation.objects.all()
         all_bags = sum(donation.quantity for donation in all_donations)
         supported_organizations = Institution.objects.count()
+        institutions = Institution.objects.all()
 
         context = {
             'all_bags': all_bags,
             'supported_organizations': supported_organizations,
+            'institutions': institutions
         }
         return render(request, 'index.html', context)
 
