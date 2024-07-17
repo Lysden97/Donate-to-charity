@@ -1,7 +1,7 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import CreateView
 
 from website.models import Donation, Institution
 
@@ -32,6 +32,18 @@ class RegisterView(View):
 class LoginView(View):
     def get(self, request):
         return render(request, 'login.html')
+
+    def post(self, request):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            redirect_url = request.GET.get('next', 'index')
+            return redirect(redirect_url)
+        else:
+            return redirect('register')
 
 
 class IndexView(View):
