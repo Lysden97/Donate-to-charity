@@ -80,3 +80,9 @@ class AddDonationView(View):
             return render(request, 'form.html', context)
         else:
             return redirect('login')
+
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        return render(request, 'profile.html', {'user': user})
