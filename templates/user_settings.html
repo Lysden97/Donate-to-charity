@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <body>
+    <section class="login-page">
+        <h2>Ustawienia użytkownika</h2>
+        {% if messages %}
+            <h3 style="color: red">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </h3>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" id="username" name="username" value="{{ username }}" required placeholder="Nazwa użytkownika">
+            </div>
+            <div class="form-group">
+                <input type="email" id="email" name="email" value="{{ email }}" required placeholder="Email">
+            </div>
+            <div class="form-group">
+                <input type="text" id="first_name" name="first_name" value="{{ first_name }}" required placeholder="Imię">
+            </div>
+            <div class="form-group">
+                <input type="text" id="last_name" name="last_name" value="{{ last_name }}" required placeholder="Nazwisko">
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" name="password" required placeholder="Hasło">
+            </div>
+            <div class="form-group form-group--buttons"></div>
+            <a href="{% url 'change_password' %}" class="btn btn--without-border">Zmień hasło</a>
+            <button class="btn" type="submit">Zapisz zmiany</button>
+        </form>
+    </section>
+    </body>
+{% endblock %}

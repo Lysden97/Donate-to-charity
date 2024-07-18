@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -86,3 +87,63 @@ class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
         return render(request, 'profile.html', {'user': user})
+
+
+class UserSettingsView(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        context = {
+            'username': user.username,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }
+        return render(request, 'user_settings.html', context)
+
+    def post(self, request):
+        user = request.user
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password')
+
+        if user.check_password(password):
+            user.username = username
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+            messages.success(request, 'Twoje dane zostały zaktualizowane.')
+        else:
+            messages.error(request, 'Podano nieprawidłowe hasło')
+
+        context = {
+            'username': user.username,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }
+        return render(request, 'user_settings.html', context)
+
+
+class ChangePasswordView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'change_password.html')
+
+    def post(self, request):
+        user = request.user
+        old_password = request.POST.get('old_password')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
+
+        if not user.check_password(old_password):
+            messages.error(request, 'Wpisane obecne hasło jest niepoprawne.')
+        elif new_password1 != new_password2:
+            messages.error(request, 'Nowe hasła nie są takie same.')
+        else:
+            user.set_password(new_password1)
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Twoje hasło zostało zmienione.')
+        return render(request, 'change_password.html')
