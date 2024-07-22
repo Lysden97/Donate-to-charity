@@ -1,10 +1,11 @@
 .idea/
-venv/
-.venv/
+.venv
+.env
 db.sqlite3
 *.pyc
 .vscode
 node_modules
 package-lock.json
 project
-local_settings.py
+__pycache__/
+Portfolio_1/local_settings.py
