@@ -6,18 +6,23 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return f'{self.name}'
+        return self.name
 
 
 class Institution(models.Model):
+
+    FOUNDATION = 'fundacja'
+    NGO = 'organizacja pozarządowa'
+    LOCAL_COLLECTION = 'zbiórka lokalna'
+
     CHOICES = (
-        (1, 'fundacja'),
-        (2, 'organizacja pozarządowa'),
-        (3, 'zbiórka lokalna'),
+        (FOUNDATION, 'fundacja'),
+        (NGO, 'organizacja pozarządowa'),
+        (LOCAL_COLLECTION, 'zbiórka lokalna'),
     )
     name = models.CharField(max_length=100)
     description = models.TextField()
-    type = models.IntegerField(choices=CHOICES, default=1)
+    type = models.CharField(max_length=100, choices=CHOICES, default=FOUNDATION)
     categories = models.ManyToManyField(Category)
 
     def __str__(self):
@@ -31,7 +36,7 @@ class Institution(models.Model):
 class Donation(models.Model):
     quantity = models.IntegerField()
     categories = models.ManyToManyField(Category)
-    institution = models.ForeignKey(Institution, on_delete=models.CASCADE, default=1)
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     address = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
     city = models.CharField(max_length=255)
@@ -40,6 +45,9 @@ class Donation(models.Model):
     pick_up_time = models.TimeField(null=True)
     pick_up_comment = models.TextField()
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.quantity} bags for {self.institution.name}'
 
 
 

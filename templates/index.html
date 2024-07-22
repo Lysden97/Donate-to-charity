@@ -17,14 +17,14 @@
     <section id="stats" class="stats">
         <div class="container container--85">
             <div class="stats--item">
-                <em>{{ all_bags }}</em>
+                <em>{{ number_of_bags }}</em>
                 <h3>Oddanych worków</h3>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius est beatae, quod accusamus illum
                     tempora!</p>
             </div>
 
             <div class="stats--item">
-                <em>{{ supported_organizations }}</em>
+                <em>{{ number_of_institutions }}</em>
                 <h3>Wspartych organizacji</h3>
                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laboriosam magnam, sint nihil cupiditate
                     quas quam.</p>
@@ -87,98 +87,169 @@
                 się zajmują, komu pomagają i czego potrzebują.</p>
 
             <ul class="help--slides-items">
-                {% for i in institutions %}
-                    {% if i.type == 1 %}
-                        <li>
-                            <div class="col">
-                                <div class="title">{{ i.name }}</div>
-                                <div class="subtitle">Cel i misja: {{ i.description }}</div>
-                            </div>
-                            {% for category in i.categories.all %}
-                                <div class="col">
-                                    <div class="text">{{ category.name }}</div>
-                                </div>
-                            {% endfor %}
-                        </li>
-                    {% endif %}
+                {% for f in foundations %}
+                    <li>
+                        <div class="col">
+                            <div class="title">{{ f.name }}</div>
+                            <div class="subtitle">Cel i misja: {{ f.description }}</div>
+                        </div>
+                        <div class="col">
+                            <div class="text">
+                                {% for category in f.categories.all %}
+                                    {{ category.name }} {% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                    </div>
+                                    </div>
+                    </li>
                 {% endfor %}
             </ul>
+            <div class="pagination" data-list="foundations">
+                <ul class="help--slides-pagination">
+                    {% if foundations.has_previous %}
+                        <li>
+                            <a href="?page_foundations=1" class="btn btn--small btn--without-border" data-page="1">&laquo;
+                                pierwsza</a>
+                        </li>
+                        <li>
+                            <a href="?page_foundations={{ foundations.previous_page_number }}"
+                               class="btn btn--small btn--without-border"
+                               data-page="{{ foundations.previous_page_number }}">poprzednia</a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <span class="current btn btn--small btn--without-border active">Strona {{ foundations.number }} z {{ foundations.paginator.num_pages }}.</span>
+                    </li>
+                    {% if foundations.has_next %}
+                        <li>
+                            <a href="?page_foundations={{ foundations.next_page_number }}"
+                               class="btn btn--small btn--without-border"
+                               data-page="{{ foundations.next_page_number }}">następna</a>
+                        </li>
+                        <li>
+                            <a href="?page_foundations={{ foundations.paginator.num_pages }}"
+                               class="btn btn--small btn--without-border"
+                               data-page="{{ foundations.paginator.num_pages }}">ostatnia &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-                <!-- Pagination
+        <!-- SLIDE 2 -->
+        <div class="help--slides" data-id="2">
+            <p>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Hic officiis mollitia dolor, neque
+                aspernatur accusamus debitis. Ducimus, officia. Quia, sunt illum! Non iste placeat ab ipsum
+                alias
+                quos suscipit corporis!
+            </p>
+            <ul class="help--slides-items">
+                {% for n in ngos %}
+                    <li>
+                        <div class="col">
+                            <div class="title">{{ n.name }}</div>
+                            <div class="subtitle">Cel i misja: {{ n.description }}</div>
+                        </div>
+                        {% for category in n.categories.all %}
+                            <div class="col">
+                                <div class="text">
+                                    {{ category.name }} {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                                </div>
+                            </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="pagination" data-list="ngos">
                 <ul class="help--slides-pagination">
-                  <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-                  <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-                  <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
+                
+                    {% if ngos.has_previous %}
+                        <li>
+                            <a href="?page_ngos=1" class="btn btn--small btn--without-border" data-page="1">&laquo;
+                                pierwsza</a>
+                        </li>
+                        <li>
+                            <a href="?page_ngos={{ ngos.previous_page_number }}"
+                               class="btn btn--small btn--without-border" data-page="{{ ngos.previous_page_number }}">poprzednia</a>
+                        </li>
+                    {% endif %}
+                
+                    <li>
+                        <span class="current btn btn--small btn--without-border active">Strona {{ ngos.number }} z {{ ngos.paginator.num_pages }}.</span>
+                    </li>
+                
+                    {% if ngos.has_next %}
+                        <li>
+                            <a href="?page_ngos={{ ngos.next_page_number }}" class="btn btn--small btn--without-border"
+                               data-page="{{ ngos.next_page_number }}">następna</a>
+                        </li>
+                        <li>
+                            <a href="?page_ngos={{ ngos.paginator.num_pages }}"
+                               class="btn btn--small btn--without-border" data-page="{{ ngos.paginator.num_pages }}">ostatnia
+                                &raquo;</a>
+                        </li>
+                    {% endif %}
                 </ul>
-                -->
-
-
-                <!-- SLIDE 2 -->
-                <div class="help--slides" data-id="2">
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Hic officiis mollitia dolor, neque
-                        aspernatur accusamus debitis. Ducimus, officia. Quia, sunt illum! Non iste placeat ab ipsum
-                        alias
-                        quos suscipit corporis!
-                    </p>
-                    <ul class="help--slides-items">
-                        {% for i in institutions %}
-                            {% if i.type == 2 %}
-                                <li>
-                                    <div class="col">
-                                        <div class="title">{{ i.name }}</div>
-                                        <div class="subtitle">Cel i misja: {{ i.description }}</div>
-                                    </div>
-                                    {% for category in i.categories.all %}
-                                        <div class="col">
-                                            <div class="text">{{ category.name }}</div>
-                                        </div>
-                                    {% endfor %}
-                                </li>
-                            {% endif %}
+            </div>
+        </div>
+        <!-- SLIDE 3 -->
+        <div class="help--slides" data-id="3">
+            <p>Lorem ipsum dolor sit amet, his ocurreret persequeris ea, ad utinam laudem duo. Verterem adipisci
+                partiendo eos ne, ea his reque quaeque recteque, ne quo lobortis intellegam.</p>
+            <ul class="help--slides-items">
+                {% for l in local_collections %}
+                    <li>
+                        <div class="col">
+                            <div class="title">{{ l.name }}</div>
+                            <div class="subtitle">Cel i misja: {{ l.description }}</div>
+                        </div>
+                        {% for category in l.categories.all %}
+                            <div class="col">
+                                <div class="text">
+                                    {{ category.name }}
+                                    {% if not forloop.last %}, {% endif %}
+                                </div>
+                            </div>
                         {% endfor %}
+                    </li>
+                {% endfor %}
+            </ul>
+             <div class="pagination" data-list="local_collections">
+
+                <div class="pagination" data-list="local_collections">
+                    <ul class="help--slides-pagination">
+                        {% if local_collections.has_previous %}
+                            <li>
+                                <a href="?page_local_collections=1" class="btn btn--small btn--without-border"
+                                   data-page="1">&laquo; pierwsza</a>
+                            </li>
+                            <li>
+                                <a href="?page_local_collections={{ local_collections.previous_page_number }}"
+                                   class="btn btn--small btn--without-border"
+                                   data-page="{{ local_collections.previous_page_number }}">poprzednia</a>
+                            </li>
+                        {% endif %}
+                    
+                        <li>
+                            <span class="current btn btn--small btn--without-border active">Strona {{ local_collections.number }} z {{ local_collections.paginator.num_pages }}.</span>
+                        </li>
+                    
+                        {% if local_collections.has_next %}
+                            <li>
+                                <a href="?page_local_collections={{ local_collections.next_page_number }}"
+                                   class="btn btn--small btn--without-border"
+                                   data-page="{{ local_collections.next_page_number }}">następna</a>
+                            </li>
+                            <li>
+                                <a href="?page_local_collections={{ local_collections.paginator.num_pages }}"
+                                   class="btn btn--small btn--without-border"
+                                   data-page="{{ local_collections.paginator.num_pages }}">ostatnia &raquo;</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
 
-                <!-- Pagination
-                <ul class="help--slides-pagination">
-                  <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-                  <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-                  <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
-                  <li><a href="#" class="btn btn--small btn--without-border" data-page="4">4</a></li>
-                  <li><a href="#" class="btn btn--small btn--without-border" data-page="5">5</a></li>
-                </ul>
-                -->
-
-                <!-- SLIDE 3 -->
-                <div class="help--slides" data-id="3">
-                    <p>Lorem ipsum dolor sit amet, his ocurreret persequeris ea, ad utinam laudem duo. Verterem adipisci
-                        partiendo eos ne, ea his reque quaeque recteque, ne quo lobortis intellegam.</p>
-                    <ul class="help--slides-items">
-                        {% for i in institutions %}
-                            {% if i.type == 3 %}
-                                <li>
-                                    <div class="col">
-                                        <div class="title">{{ i.name }}</div>
-                                        <div class="subtitle">Cel i misja: {{ i.description }}</div>
-                                    </div>
-                                    {% for category in i.categories.all %}
-                                        <div class="col">
-                                            <div class="text">{{ category.name }}</div>
-                                        </div>
-                                    {% endfor %}
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
-
-                <!-- Pagination
-                <ul class="help--slides-pagination">
-                  <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-                  <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-                </ul>
-                -->
+            </div>
+        </div>
     </section>
     </body>
 {% endblock %}

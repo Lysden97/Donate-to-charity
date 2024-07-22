@@ -56,14 +56,32 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        /**
-         * TODO: callback to page change event
-         */
         changePage(e) {
             e.preventDefault();
-            const page = e.target.dataset.page;
+            const $btn = e.target;
+            const page = $btn.dataset.page;
+            const listType = $btn.closest(".pagination").dataset.list;
 
-            console.log(page);
+            fetch(`?page_${listType}=${page}`)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    // Update the corresponding list
+                    const newContent = doc.querySelector(`.help--slides[data-id="${this.currentSlide}"] .help--slides-items`);
+                    const newPagination = doc.querySelector(`.pagination[data-list="${listType}"] .help--slides-pagination`);
+
+                    const currentContent = this.$el.querySelector(`.help--slides[data-id="${this.currentSlide}"] .help--slides-items`);
+                    const currentPagination = this.$el.querySelector(`.pagination[data-list="${listType}"] .help--slides-pagination`);
+
+                    currentContent.innerHTML = newContent.innerHTML;
+                    currentPagination.innerHTML = newPagination.innerHTML;
+
+                    // Reattach events after replacing content
+                    this.events();
+                })
+                .catch(error => console.error('Error loading new page:', error));
         }
     }
 
@@ -71,6 +89,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (helpSection !== null) {
         new Help(helpSection);
     }
+    // Date restriction
+    const dateInput = document.getElementById('date');
+
+    // Get today's date in ISO format (YYYY-MM-DD)
+    const today = new Date().toISOString().split('T')[0];
+
+    // Set the minimum attribute of the date input to today's date
+    dateInput.setAttribute('min', today);
+
 
     /**
      * Form Select
@@ -179,31 +206,37 @@ document.addEventListener("DOMContentLoaded", function () {
             const $stepForms = form.querySelectorAll("form > div");
             this.slides = [...this.$stepInstructions, ...$stepForms];
 
+            this.categories = Array.from(document.querySelectorAll('[name="categories"]:checked')).map(el => el.value);
+
+            this.feedbackMessages = {
+                1: document.getElementById('feedback-message-step-1'),
+                2: document.getElementById('feedback-message-step-2'),
+                3: document.getElementById('feedback-message-step-3'),
+                4: document.getElementById('feedback-message-step-4')
+            };
+
             this.init();
         }
 
-        /**
-         * Init all methods
-         */
         init() {
             this.events();
             this.updateForm();
+            this.populateSummary();
         }
 
-        /**
-         * All events that are happening in form
-         */
         events() {
-            // Next step
             this.$next.forEach(btn => {
                 btn.addEventListener("click", e => {
                     e.preventDefault();
-                    this.currentStep++;
-                    this.updateForm();
+                    if (this.validateStep()) {
+                        this.currentStep++;
+                        this.updateForm();
+                    } else {
+                        this.showFeedbackMessage();
+                    }
                 });
             });
 
-            // Previous step
             this.$prev.forEach(btn => {
                 btn.addEventListener("click", e => {
                     e.preventDefault();
@@ -212,40 +245,152 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             });
 
-            // Form submit
-            this.$form.querySelector("form").addEventListener("submit", e => this.submit(e));
+            document.querySelectorAll('[name="categories"]').forEach(el => {
+                el.addEventListener("change", () => {
+                    this.categories = Array.from(document.querySelectorAll('[name="categories"]:checked')).map(el => el.value);
+                    this.filterOrganizations();
+                    this.populateSummary();
+                    this.validateStep();
+                });
+            });
+
+            document.querySelectorAll('[name="organization"]').forEach(el => {
+                el.addEventListener("change", () => {
+                    this.validateStep();
+                });
+            });
+
+            const bagsInput = document.querySelector('[name="bags"]');
+            if (bagsInput) {
+                bagsInput.addEventListener("input", () => {
+                    this.validateStep();
+                });
+            }
+
+            const step4Inputs = document.querySelectorAll('input[id="address"], input[id="city"], input[id="postcode"], input[id="phone"], input[id="date"], input[id="time"]');
+            step4Inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    this.validateStep();
+                });
+            });
         }
 
-        /**
-         * Update form front-end
-         * Show next or previous section etc.
-         */
         updateForm() {
             this.$step.innerText = this.currentStep;
 
-            // TODO: Validation
-
             this.slides.forEach(slide => {
                 slide.classList.remove("active");
-
                 if (slide.dataset.step == this.currentStep) {
                     slide.classList.add("active");
                 }
             });
 
-            this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
-            this.$step.parentElement.hidden = this.currentStep >= 6;
+            if (this.currentStep === 3) {
+                this.filterOrganizations();
+            }
 
-            // TODO: get data from inputs and show them in summary
+            this.populateSummary();
         }
 
-        /**
-         * Submit form
-         *
-         * TODO: validation, send data to server
-         */
+        filterOrganizations() {
+            const organizations = document.querySelectorAll('[name="organization"]');
+
+            organizations.forEach(org => {
+                const orgCategories = JSON.parse(org.dataset.categories);
+
+                if (this.categories.every(cat => orgCategories.includes(parseInt(cat)))) {
+                    org.closest('.form-group--checkbox').style.display = 'block';
+                } else {
+                    org.closest('.form-group--checkbox').style.display = 'none';
+                }
+            });
+        }
+
+        populateSummary() {
+            const bags = document.querySelector('[name="bags"]').value;
+            const categories = Array.from(document.querySelectorAll('[name="categories"]:checked'))
+                .map(el => el.parentElement.querySelector('.description').innerText.trim());
+            const organization = document.querySelector('[name="organization"]:checked');
+            const address = document.querySelector('[name="address"]').value;
+            const city = document.querySelector('[name="city"]').value;
+            const postcode = document.querySelector('[name="postcode"]').value;
+            const phone = document.querySelector('[name="phone"]').value;
+            const date = document.querySelector('[name="date"]').value;
+            const time = document.querySelector('[name="time"]').value;
+            const moreInfo = document.querySelector('[name="more_info"]').value || 'Brak uwag';
+
+            const categoriesText = categories.length > 0 ? categories.join(', ') : 'Brak kategorii wybranych';
+            const organizationText = organization ? organization.parentElement.querySelector('.description').innerText : 'Brak organizacji wybranej';
+
+            document.getElementById('summary-items').innerText = `Worki: ${bags}, Kategorie: ${categoriesText}`;
+            document.getElementById('summary-organization').innerText = organizationText;
+            document.getElementById('summary-address').innerText = address;
+            document.getElementById('summary-city').innerText = city;
+            document.getElementById('summary-postcode').innerText = postcode;
+            document.getElementById('summary-phone').innerText = phone;
+            document.getElementById('summary-date').innerText = date;
+            document.getElementById('summary-time').innerText = time;
+            document.getElementById('summary-more_info').innerText = moreInfo;
+        }
+
+        validateStep() {
+            let isValid = true;
+            let message = '';
+
+            if (this.currentStep === 1) {
+                const selectedCategories = document.querySelectorAll('[name="categories"]:checked');
+                isValid = selectedCategories.length > 0;
+                message = isValid ? '' : 'Wybierz przynajmniej jedną kategorię';
+            }
+
+            if (this.currentStep === 2) {
+                const bagsInput = document.querySelector('[name="bags"]');
+                isValid = bagsInput && Number.isInteger(+bagsInput.value) && +bagsInput.value > 0;
+                message = isValid ? '' : 'Musi podać poprawną ilość worków';
+            }
+
+            if (this.currentStep === 3) {
+                const selectedOrganization = document.querySelector('[name="organization"]:checked');
+                isValid = !!selectedOrganization;
+                message = isValid ? '' : 'Musisz wybrać jakąś organizację';
+            }
+
+            if (this.currentStep === 4) {
+                const address = document.querySelector('#address').value.trim();
+                const city = document.querySelector('#city').value.trim();
+                const postcode = document.querySelector('#postcode').value.trim();
+                const phone = document.querySelector('#phone').value.trim();
+                const date = document.querySelector('#date').value.trim();
+                const time = document.querySelector('#time').value.trim();
+
+                isValid = address && city && postcode && phone && date && time;
+                message = isValid ? '' : 'Musisz wypełnić wszystkie pola poza uwagami do kuriera';
+            }
+
+            const nextButton = this.$form.querySelector('.next-step');
+            if (nextButton) {
+                nextButton.disabled = !isValid;
+            }
+
+            this.clearFeedbackMessages();
+            this.feedbackMessages[this.currentStep].innerText = message;
+
+            return isValid;
+        }
+
+        clearFeedbackMessages() {
+            for (let step in this.feedbackMessages) {
+                this.feedbackMessages[step].innerText = '';
+            }
+        }
+
+        showFeedbackMessage() {
+            this.feedbackMessages[this.currentStep].style.display = 'block';
+        }
+
         submit(e) {
             e.preventDefault();
+            this.populateSummary();
             this.currentStep++;
             this.updateForm();
         }
@@ -256,4 +401,3 @@ document.addEventListener("DOMContentLoaded", function () {
         new FormSteps(form);
     }
 });
-
