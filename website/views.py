@@ -140,7 +140,7 @@ class AddDonationView(LoginRequiredMixin, View):
                 user=request.user,
             )
             donation.categories.add(*categories_ids)
-            return redirect('form-confirmation')
+            return redirect('add_donation_confirmation')
 
         except Exception as e:
             return render(request, 'form.html', {'error_message': str(e)})

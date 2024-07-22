@@ -26,4 +26,5 @@ urlpatterns = [
     path('settings/', views.UserSettingsView.as_view(), name='settings'),
     path('change_password/', views.ChangePasswordView.as_view(), name='change_password'),
     path('add_donation/', views.AddDonationView.as_view(), name='add_donation'),
+    path('add_donation/confirmation/', views.FormConfirmationView.as_view(), name='add_donation_confirmation'),
 ]

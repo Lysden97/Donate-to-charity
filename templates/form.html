@@ -56,13 +56,13 @@
 
         <div class="form--steps-container">
             <div class="form--steps-counter">Krok <span>1</span>/5</div>
-        
+
             <form action="{% url 'add_donation' %}" method="POST">
-            
+            {% csrf_token %}
                 <!-- STEP 1: class .active is switching steps -->
                 <div data-step="1" class="active">
                     <h3>Zaznacz co chcesz oddać:</h3>
-                
+
                     {% for c in categories %}
                         <div class="form-group form-group--checkbox">
                             <label>
