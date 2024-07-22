@@ -97,42 +97,30 @@
                             <div class="text">
                                 {% for category in f.categories.all %}
                                     {{ category.name }} {% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                    </div>
-                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
+        
             <div class="pagination" data-list="foundations">
                 <ul class="help--slides-pagination">
-                    {% if foundations.has_previous %}
-                        <li>
-                            <a href="?page_foundations=1" class="btn btn--small btn--without-border" data-page="1">&laquo;
-                                pierwsza</a>
-                        </li>
-                        <li>
-                            <a href="?page_foundations={{ foundations.previous_page_number }}"
-                               class="btn btn--small btn--without-border"
-                               data-page="{{ foundations.previous_page_number }}">poprzednia</a>
-                        </li>
-                    {% endif %}
-                    <li>
-                        <span class="current btn btn--small btn--without-border active">Strona {{ foundations.number }} z {{ foundations.paginator.num_pages }}.</span>
-                    </li>
-                    {% if foundations.has_next %}
-                        <li>
-                            <a href="?page_foundations={{ foundations.next_page_number }}"
-                               class="btn btn--small btn--without-border"
-                               data-page="{{ foundations.next_page_number }}">następna</a>
-                        </li>
-                        <li>
-                            <a href="?page_foundations={{ foundations.paginator.num_pages }}"
-                               class="btn btn--small btn--without-border"
-                               data-page="{{ foundations.paginator.num_pages }}">ostatnia &raquo;</a>
-                        </li>
-                    {% endif %}
+                    {% for num in foundations.paginator.page_range %}
+                        {% if foundations.number == num %}
+                            <li>
+                                <span class="current btn btn--small btn--without-border active">{{ num }}</span>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="?page_foundations={{ num }}" class="btn btn--small btn--without-border"
+                                   data-page="{{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
                 </ul>
             </div>
+        
         </div>
         <!-- SLIDE 2 -->
         <div class="help--slides" data-id="2">
@@ -151,45 +139,32 @@
                         </div>
                         {% for category in n.categories.all %}
                             <div class="col">
-                                <div class="text">
-                                    {{ category.name }} {% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                                </div>
-                            </div>
+                            <div class="text">
+                            {{ category.name }} {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        </div>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
+        
             <div class="pagination" data-list="ngos">
                 <ul class="help--slides-pagination">
-                
-                    {% if ngos.has_previous %}
-                        <li>
-                            <a href="?page_ngos=1" class="btn btn--small btn--without-border" data-page="1">&laquo;
-                                pierwsza</a>
-                        </li>
-                        <li>
-                            <a href="?page_ngos={{ ngos.previous_page_number }}"
-                               class="btn btn--small btn--without-border" data-page="{{ ngos.previous_page_number }}">poprzednia</a>
-                        </li>
-                    {% endif %}
-                
-                    <li>
-                        <span class="current btn btn--small btn--without-border active">Strona {{ ngos.number }} z {{ ngos.paginator.num_pages }}.</span>
-                    </li>
-                
-                    {% if ngos.has_next %}
-                        <li>
-                            <a href="?page_ngos={{ ngos.next_page_number }}" class="btn btn--small btn--without-border"
-                               data-page="{{ ngos.next_page_number }}">następna</a>
-                        </li>
-                        <li>
-                            <a href="?page_ngos={{ ngos.paginator.num_pages }}"
-                               class="btn btn--small btn--without-border" data-page="{{ ngos.paginator.num_pages }}">ostatnia
-                                &raquo;</a>
-                        </li>
-                    {% endif %}
+                    {% for num in ngos.paginator.page_range %}
+                        {% if ngos.number == num %}
+                            <li>
+                                <span class="current btn btn--small btn--without-border active">{{ num }}</span>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="?page_ngos={{ num }}" class="btn btn--small btn--without-border"
+                                   data-page="{{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
                 </ul>
             </div>
+        
         </div>
         <!-- SLIDE 3 -->
         <div class="help--slides" data-id="3">
@@ -213,38 +188,23 @@
                     </li>
                 {% endfor %}
             </ul>
-             <div class="pagination" data-list="local_collections">
-
+        
+            <div class="pagination" data-list="local_collections">
                 <div class="pagination" data-list="local_collections">
                     <ul class="help--slides-pagination">
-                        {% if local_collections.has_previous %}
-                            <li>
-                                <a href="?page_local_collections=1" class="btn btn--small btn--without-border"
-                                   data-page="1">&laquo; pierwsza</a>
-                            </li>
-                            <li>
-                                <a href="?page_local_collections={{ local_collections.previous_page_number }}"
-                                   class="btn btn--small btn--without-border"
-                                   data-page="{{ local_collections.previous_page_number }}">poprzednia</a>
-                            </li>
-                        {% endif %}
-                    
-                        <li>
-                            <span class="current btn btn--small btn--without-border active">Strona {{ local_collections.number }} z {{ local_collections.paginator.num_pages }}.</span>
-                        </li>
-                    
-                        {% if local_collections.has_next %}
-                            <li>
-                                <a href="?page_local_collections={{ local_collections.next_page_number }}"
-                                   class="btn btn--small btn--without-border"
-                                   data-page="{{ local_collections.next_page_number }}">następna</a>
-                            </li>
-                            <li>
-                                <a href="?page_local_collections={{ local_collections.paginator.num_pages }}"
-                                   class="btn btn--small btn--without-border"
-                                   data-page="{{ local_collections.paginator.num_pages }}">ostatnia &raquo;</a>
-                            </li>
-                        {% endif %}
+
+                        {% for num in local_collections.paginator.page_range %}
+                            {% if local_collections.number == num %}
+                                <li>
+                                    <span class="current btn btn--small btn--without-border active">{{ num }}</span>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="?page_local_collections={{ num }}"
+                                       class="btn btn--small btn--without-border" data-page="{{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
                     </ul>
                 </div>
 

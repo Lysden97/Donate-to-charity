@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <header class="header--main-page">
+    <header>
         <div class="slogan container container--90">
             <div class="slogan--item">
                 <h1>
@@ -14,7 +14,7 @@
                 </ul>
 
 
-                <div class="help--slides active">
+                <h4 class="help--slides active">
                     <div class="slogan--steps-title"><strong>Przekazane dary:</strong></div>
 
                     <ul class="help--slides-items">
@@ -46,9 +46,10 @@
                             </div>
                             </div>
                             </form>
+
                             </ul>
                         {% else %}
-                            <p>Brak przekazanych darów.</p>
+                            <h1><em>Brak przekazanych darów.</em></h1>
                         {% endif %}
                 </div>
             </div>

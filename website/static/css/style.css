@@ -1831,4 +1831,9 @@ footer .bottom-line--icons a img {
 
 .received {
     color: forestgreen;
+    font-style: italic;
+    background-image: url(../images/approve.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }

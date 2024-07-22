@@ -92,7 +92,7 @@ class IndexView(View):
 
 
 class AddDonationView(LoginRequiredMixin, View):
-    login_url = '/login/'
+    login_url = '/website/login/'
     def get(self, request):
         categories = Category.objects.all()
         organizations = Institution.objects.all()
@@ -122,12 +122,12 @@ class AddDonationView(LoginRequiredMixin, View):
 
         if not (
                 bags and categories_ids and organization_id and address and city and postcode and phone and date and time):
-            return HttpResponseBadRequest('Missing required data')
+            return HttpResponseBadRequest('Brak wymaganych danych')
 
         try:
             organization = Institution.objects.get(pk=organization_id)
         except Institution.DoesNotExist:
-            return HttpResponseBadRequest('Organization not found')
+            return HttpResponseBadRequest('Nie znaleziono organizacji')
 
         try:
             donation = Donation.objects.create(
