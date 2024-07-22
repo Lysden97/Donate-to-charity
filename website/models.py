@@ -45,6 +45,7 @@ class Donation(models.Model):
     pick_up_time = models.TimeField(null=True)
     pick_up_comment = models.TextField()
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    is_taken = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.quantity} bags for {self.institution.name}'

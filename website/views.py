@@ -48,7 +48,10 @@ class LoginView(View):
             redirect_url = request.GET.get('next', 'index')
             return redirect(redirect_url)
         else:
-            return redirect('register')
+            if not User.objects.filter(username=email).exists():
+                return redirect('register')
+            error = 'Nieprawidłowa nazwa użytkownika lub hasło'
+            return render(request, 'login.html', {'error': error})
 
 
 class LogoutView(View):
@@ -153,8 +156,22 @@ class FormConfirmationView(LoginRequiredMixin, View):
 
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        user = request.user
-        return render(request, 'profile.html', {'user': user})
+        donations = Donation.objects.filter(user=request.user)
+        context = {
+            'donations': donations,
+        }
+        return render(request, 'profile.html', context)
+
+    def post(self, request):
+        donations = Donation.objects.filter(user=request.user)
+        for donation in donations:
+            is_taken_field = f'is_taken_{donation.id}'
+            if is_taken_field in request.POST:
+                donation.is_taken = True
+            else:
+                donation.is_taken = False
+            donation.save()
+        return redirect('user')
 
 
 class UserSettingsView(LoginRequiredMixin, View):
