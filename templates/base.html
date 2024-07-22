@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Strona główna{% endblock %}</title>
+    <link type='text/css' href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+<header style="height: 30vh">
+    <nav class="container container--70">
+        <ul class="nav--actions">
+            {% if not user.is_authenticated %}
+                <li><a href="{% url 'login' %}" class="btn btn--small btn--highlighted">Zaloguj</a></li>
+                <li><a href="{% url 'register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <nav class="container container--70">
+                    <ul class="nav--actions">
+                        <li class="logged-user">
+                            Witaj {{ user.first_name }}
+                            <ul class="dropdown">
+                                <li><a href="{% url 'user' %}">Profil</a></li>
+                                <li><a href="{% url 'settings' %}">Ustawienia</a></li>
+                                {% if user.is_superuser %}
+                                <li><a href="/admin">Panel administracyjny</a></li>
+                                {% endif %}
+                                <li><a href="{% url 'logout' %}">Wyloguj</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul>
+                    </ul>
+                </nav>
+            {% endif %}
+        </ul>
+
+        <ul>
+            <li><a href="{% url 'index' %}" class="btn btn--without-border">Start</a></li>
+            <li><a href="{% url 'index' %}#steps" class="btn btn--without-border">O co chodzi?</a></li>
+            <li><a href="{% url 'index' %}#about-us" class="btn btn--without-border">O nas</a></li>
+            <li><a href="{% url 'index' %}#help" class="btn btn--without-border">Fundacje i organizacje</a></li>
+            <li><a href="{% url 'add_donation' %}" class="btn btn--without-border">Przekaż dary</a></li>
+            <li><a href="#contact" class="btn btn--without-border">Kontakt</a></li>
+        </ul>
+    </nav>
+</header>
+{% block content %}
+{% endblock %}
+
+<footer>
+    <div class="contact" id="contact">
+        <h2>Skontaktuj się z nami</h2>
+        <h3>Formularz kontaktowy</h3>
+        <form class="form--contact">
+            <div class="form-group form-group--50">
+                <input type="text" name="name" placeholder="Imię"/>
+            </div>
+            <div class="form-group form-group--50">
+                <input type="text" name="surname" placeholder="Nazwisko"/>
+            </div>
+
+            <div class="form-group">
+            <textarea
+                    name="message"
+                    placeholder="Wiadomość"
+                    rows="1"
+            ></textarea>
+            </div>
+
+            <button class="btn" type="submit">Wyślij</button>
+        </form>
+    </div>
+    <div class="bottom-line">
+        <span class="bottom-line--copy">Copyright &copy; {% now 'Y' %}</span>
+        <div class="bottom-line--icons">
+            <a href="#" class="btn btn--small"><img src='{% static "images/icon-facebook.svg" %}'></a>
+            <a href="#" class="btn btn--small"><img src='{% static "images/icon-instagram.svg" %}'></a>
+        </div>
+    </div>
+</footer>
+
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

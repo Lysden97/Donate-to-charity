@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <header>
+        <div class="slogan container container--90">
+            <div class="slogan--item">
+                <h1>
+                    <strong>Profil użytkownika</strong><br/>
+                </h1>
+                <ul class="slogan--steps-title">
+                    <p><strong>Imię:</strong> <em>{{ user.first_name }}</em></p>
+                    <p><strong>Nazwisko:</strong> <em>{{ user.last_name }}</em></p>
+                    <p><strong>Email:</strong> <em>{{ user.email }}</em></p>
+                </ul>
+
+
+                <h4 class="help--slides active">
+                    <div class="slogan--steps-title"><strong>Przekazane dary:</strong></div>
+
+                    <ul class="help--slides-items">
+                        {% if donations %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                {% for d in donations|dictsort:'is_taken' %}
+                                    <li class="{% if d.is_taken %}received{% endif %}">
+                                    <div class="col">
+                                    <p><strong>Ilość worków:</strong> {{ d.quantity }} </p>
+                                    <p><strong>Organizacja:</strong> {{ d.institution }}</p>
+                                    <p><strong>Kategorie:</strong>
+                                        {% for c in d.categories.all %}
+                                            {{ c.name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                    <p><strong>Data odbioru:</strong> {{ d.pick_up_date }}</p>
+                                    <p><strong>Godzina odbioru:</strong> {{ d.pick_up_time }}</p>
+                                    <p><strong>Odebrane:</strong>
+                                        <input type="checkbox" id="is_taken_{{ d.id }}" name="is_taken_{{ d.id }}"
+                                               value="true" {% if d.is_taken %}checked{% endif %}>
+                                    </p>
+                                {% endfor %}
+                                </div>
+                                </li>
+                            <div class="help--slides active">
+                            <div class="slogan--steps-title">
+                            <button class="btn" type="submit">Zapisz zmiany</button>
+                            </div>
+                            </div>
+                            </form>
+
+                            </ul>
+                        {% else %}
+                            <h1><em>Brak przekazanych darów.</em></h1>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock %}

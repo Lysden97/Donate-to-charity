@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "website.apps.WebsiteConfig"
 ]
 
 MIDDLEWARE = [
@@ -77,9 +78,14 @@ WSGI_APPLICATION = 'Portfolio_1.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
 
 
 # Password validation
