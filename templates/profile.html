@@ -8,9 +8,9 @@
                     <strong>Profil użytkownika</strong><br/>
                 </h1>
                 <ul class="slogan--steps-title">
-                    <p><strong>Imię:</strong> {{ user.first_name }}</p>
-                    <p><strong>Nazwisko:</strong> {{ user.last_name }}</p>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Imię:</strong> <em>{{ user.first_name }}</em></p>
+                    <p><strong>Nazwisko:</strong> <em>{{ user.last_name }}</em></p>
+                    <p><strong>Email:</strong> <em>{{ user.email }}</em></p>
                 </ul>
 
 
@@ -21,8 +21,8 @@
                         {% if donations %}
                             <form method="POST">
                                 {% csrf_token %}
-                                {% for d in donations %}
-                                    <li>
+                                {% for d in donations|dictsort:'is_taken' %}
+                                    <li class="{% if d.is_taken %}received{% endif %}">
                                     <div class="col">
                                     <p><strong>Ilość worków:</strong> {{ d.quantity }} </p>
                                     <p><strong>Organizacja:</strong> {{ d.institution }}</p>
@@ -40,9 +40,11 @@
                                 {% endfor %}
                                 </div>
                                 </li>
-                            <div class="form-group form-group--buttons ">
-                                    <button class="btn" type="submit">Zapisz zmiany</button>
-                                </div>
+                            <div class="help--slides active">
+                            <div class="slogan--steps-title">
+                            <button class="btn" type="submit">Zapisz zmiany</button>
+                            </div>
+                            </div>
                             </form>
                             </ul>
                         {% else %}
