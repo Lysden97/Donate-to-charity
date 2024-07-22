@@ -324,7 +324,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById('summary-items').innerText = `Worki: ${bags}, Kategorie: ${categoriesText}`;
             document.getElementById('summary-organization').innerText = organizationText;
-            document.getElementById('summary-address').innerText = address;
+            document.getElementById('summary-address').innerHTML =  address;
             document.getElementById('summary-city').innerText = city;
             document.getElementById('summary-postcode').innerText = postcode;
             document.getElementById('summary-phone').innerText = phone;
