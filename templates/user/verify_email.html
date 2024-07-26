@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <body>
+        <header class="header--main-page">
+            <div class="slogan container container--90">
+                <div class="slogan--item">
+                    <h1><strong>Musisz zweryfikować swój email</strong></h1>
+                    <h2><input class="btn" type="submit" value="Zweryfikuj"></h2>
+                </div>
+            </div>
+        </header>
+        </body>
+    </form>
+{% endblock %}
