@@ -1,63 +1,13 @@
 import json
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db import models
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.views import View
 from website.models import Donation, Institution, Category
-
-
-class RegisterView(View):
-    def get(self, request):
-        return render(request, 'register.html')
-
-    def post(self, request):
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-        if not first_name or not last_name or not email or not password or not confirm_password:
-            return render(request, 'register.html', {'error': 'Wszystkie pola są wymagane'})
-        if password != confirm_password:
-            return render(request, 'register.html', {'error': 'Hasła nie są takie same'})
-        if User.objects.filter(email=email).exists():
-            return render(request, 'register.html', {'error': 'Użytkownik już istnieje'})
-        user = User.objects.create_user(username=email, email=email, password=password)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
-        return redirect('login')
-
-
-class LoginView(View):
-    def get(self, request):
-        return render(request, 'login.html')
-
-    def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            login(request, user)
-            redirect_url = request.GET.get('next', 'index')
-            return redirect(redirect_url)
-        else:
-            if not User.objects.filter(username=email).exists():
-                return redirect('register')
-            error = 'Nieprawidłowa nazwa użytkownika lub hasło'
-            return render(request, 'login.html', {'error': error})
-
-
-class LogoutView(View):
-    def get(self, request):
-        logout(request)
-        return redirect('index')
 
 
 class IndexView(View):
@@ -93,6 +43,7 @@ class IndexView(View):
 
 class AddDonationView(LoginRequiredMixin, View):
     login_url = '/website/login/'
+
     def get(self, request):
         categories = Category.objects.all()
         organizations = Institution.objects.all()

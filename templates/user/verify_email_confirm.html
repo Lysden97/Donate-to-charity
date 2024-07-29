@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<body>
+<header class="header--main-page">
+    <div class="slogan container container--90">
+        <div class="slogan--item">
+            <h1>
+                <strong>
+                    {% if messages %}
+                        {% for message in messages %}
+                            {{ message }}
+                            </strong>
+                            </h1>
+                        {% endfor %}
+                    {% endif %}
+        </div>
+    </div>
+</header>
+{% endblock %}
